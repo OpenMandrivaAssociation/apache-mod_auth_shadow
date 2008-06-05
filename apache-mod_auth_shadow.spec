@@ -7,7 +7,7 @@
 Summary:	Shadow password authentication for the apache web server
 Name:		apache-%{mod_name}
 Version:	2.2
-Release:	%mkrel 6
+Release:	%mkrel 7
 Group:		System/Servers
 License:	GPL
 URL:		http://mod-auth-shadow.sourceforge.net/
@@ -23,7 +23,7 @@ Requires:	apache-conf >= %{apache_version}
 Requires:	apache >= %{apache_version}
 BuildRequires:  apache-devel >= %{apache_version}
 Epoch:		1
-BuildRoot:	%{_tmppath}/%{name}-%{version}-buildroot
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 mod_auth_shadow is an apache module which authenticates against the /etc/shadow
