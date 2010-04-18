@@ -7,7 +7,7 @@
 Summary:	Shadow password authentication for the apache web server
 Name:		apache-%{mod_name}
 Version:	2.2
-Release:	%mkrel 12
+Release:	%mkrel 13
 Group:		System/Servers
 License:	GPL
 URL:		http://mod-auth-shadow.sourceforge.net/
@@ -15,6 +15,7 @@ Source0:	http://prdownloads.sourceforge.net/mod-auth-shadow/%{mod_name}-%{versio
 Source1:	%{mod_conf}
 Patch0:		%{mod_name}-2.1-register.diff
 Patch1:		%{mod_name}-2.1-makefile.diff
+Patch2:		mod_auth_shadow-2.2-CVE-2010-1151.patch
 Requires(pre): rpm-helper
 Requires(postun): rpm-helper
 Requires(pre):  apache-conf >= %{apache_version}
@@ -35,6 +36,7 @@ your web daemons are running under a non-privileged user.
 %setup -q -n %{mod_name}-%{version}
 %patch0 -p0
 %patch1 -p0
+%patch2 -p1 -b .CVE-2010-1151
 
 cp %{SOURCE1} %{mod_conf}
 
