@@ -1,29 +1,23 @@
 #Module-Specific definitions
-%define apache_version 2.2.4
+%define apache_version 2.4.0
 %define mod_name mod_auth_shadow
-%define mod_conf 83_%{mod_name}.conf
-%define mod_so %{mod_name}.so
+%define load_order 183
 
 Summary:	Shadow password authentication for the apache web server
 Name:		apache-%{mod_name}
 Version:	2.3
-Release:	%mkrel 2
+Release:	3
 Group:		System/Servers
 License:	GPL
 URL:		http://mod-auth-shadow.sourceforge.net/
 Source0:	http://prdownloads.sourceforge.net/mod-auth-shadow/%{mod_name}-%{version}.tar.gz
-Source1:	%{mod_conf}
 Patch0:		%{mod_name}-2.1-register.diff
 Patch1:		%{mod_name}-2.1-makefile.diff
 Requires(pre): rpm-helper
 Requires(postun): rpm-helper
-Requires(pre):  apache-conf >= %{apache_version}
-Requires(pre):  apache >= %{apache_version}
-Requires:	apache-conf >= %{apache_version}
 Requires:	apache >= %{apache_version}
 BuildRequires:  apache-devel >= %{apache_version}
 Epoch:		1
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 mod_auth_shadow is an apache module which authenticates against the /etc/shadow
@@ -36,44 +30,34 @@ your web daemons are running under a non-privileged user.
 %patch0 -p0
 %patch1 -p0
 
-cp %{SOURCE1} %{mod_conf}
-
 %build
 %serverbuild
 
 export PATH="$PATH:/usr/sbin"
 %make CFLAGS="$CFLAGS" -f makefile
 
-%install
-[ "%{buildroot}" != "/" ] && rm -rf %{buildroot}
-
-install -d %{buildroot}%{_libdir}/apache-extramodules
+install -d %{buildroot}%{_libdir}/apache
 install -d %{buildroot}%{_sysconfdir}/httpd/modules.d
 
-install -m0755 .libs/*.so %{buildroot}%{_libdir}/apache-extramodules/
-install -m0644 %{mod_conf} %{buildroot}%{_sysconfdir}/httpd/modules.d/%{mod_conf}
+install -m0755 .libs/*.so %{buildroot}%{_libdir}/apache/
+
+cat > %{buildroot}%{_sysconfdir}/httpd/modules.d/%{load_order}_%{mod_name}.conf << EOF
+LoadModule auth_shadow_module %{_libdir}/%{mod_name}.so
+EOF
 
 install -d %{buildroot}%{_sbindir}
 install -m0755 validate %{buildroot}%{_sbindir}/
 
 %post
-if [ -f %{_var}/lock/subsys/httpd ]; then
-    %{_initrddir}/httpd restart 1>&2;
-fi
+/bin/systemctl daemon-reload >/dev/null 2>&1 || :
 
 %postun
 if [ "$1" = "0" ]; then
-    if [ -f %{_var}/lock/subsys/httpd ]; then
-        %{_initrddir}/httpd restart 1>&2
-    fi
+    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
 fi
 
-%clean
-[ "%{buildroot}" != "/" ] && rm -rf %{buildroot}
-
 %files
-%defattr(-,root,root)
 %doc CHANGES INSTALL README
-%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/httpd/modules.d/%{mod_conf}
-%attr(0755,root,root) %{_libdir}/apache-extramodules/%{mod_so}
+%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/httpd/modules.d/*.conf
+%attr(0755,root,root) %{_libdir}/apache/*.so
 %attr(4755,root,root) %{_sbindir}/validate
