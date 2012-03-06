@@ -6,7 +6,7 @@
 Summary:	Shadow password authentication for the apache web server
 Name:		apache-%{mod_name}
 Version:	2.3
-Release:	3
+Release:	4
 Group:		System/Servers
 License:	GPL
 URL:		http://mod-auth-shadow.sourceforge.net/
@@ -34,7 +34,9 @@ your web daemons are running under a non-privileged user.
 %serverbuild
 
 export PATH="$PATH:/usr/sbin"
-%make CFLAGS="$CFLAGS" -f makefile
+%make CFLAGS="$CFLAGS" APXS="%{_bindir}/apxs" -f makefile
+
+%install
 
 install -d %{buildroot}%{_libdir}/apache
 install -d %{buildroot}%{_sysconfdir}/httpd/modules.d
@@ -42,7 +44,7 @@ install -d %{buildroot}%{_sysconfdir}/httpd/modules.d
 install -m0755 .libs/*.so %{buildroot}%{_libdir}/apache/
 
 cat > %{buildroot}%{_sysconfdir}/httpd/modules.d/%{load_order}_%{mod_name}.conf << EOF
-LoadModule auth_shadow_module %{_libdir}/%{mod_name}.so
+LoadModule auth_shadow_module %{_libdir}/apache/%{mod_name}.so
 EOF
 
 install -d %{buildroot}%{_sbindir}
