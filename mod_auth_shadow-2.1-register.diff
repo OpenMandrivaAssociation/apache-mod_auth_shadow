@@ -1,0 +1,21 @@
+--- mod_auth_shadow.c	2003-01-07 03:08:42.000000000 +0100
++++ mod_auth_shadow.c.oden	2003-01-19 18:50:57.000000000 +0100
+@@ -98,9 +98,18 @@
+ // Authorization function
+ static int auth_shadow_valid_user(request_rec *r);
+ 
++/* ######################################################################## */
++static int auth_shadow_init_handler(apr_pool_t *p, apr_pool_t *plog,
++                                apr_pool_t *ptemp, server_rec *s)
++{
++    ap_add_version_component(p, "mod_auth_shadow/2.3");
++    return OK;
++}
++
+ /* Apache 2 hooks for functions other than the handler itself. */
+ static void my_register_hooks()
+ {
++	ap_hook_post_config(auth_shadow_init_handler, NULL, NULL, APR_HOOK_MIDDLE);
+ 	/* We want to run before mod_auth runs. */
+ 	static const char *aszpost[] = {"mod_auth.c", NULL};
+ 	/* Authentication function */

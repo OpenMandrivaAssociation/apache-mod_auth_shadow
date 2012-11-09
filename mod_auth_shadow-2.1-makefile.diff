@@ -1,0 +1,37 @@
+--- makefile	2005-09-26 19:57:57.000000000 +0200
++++ makefile.oden	2006-03-28 01:16:09.000000000 +0200
+@@ -7,8 +7,9 @@
+ 
+ APXS = /usr/sbin/apxs
+ CC = gcc
+-INSTBINDIR = /usr/local/sbin
+-DEFINES = -D INSTBINDIR=\\\"$(INSTBINDIR)\\\"
++CFLAGS = $(RPM_OPT_FLAGS)
++INSTBINDIR = /usr/sbin
++DEFINES = -DINSTBINDIR=\\\"$(INSTBINDIR)\\\"
+ 
+ all: validate .libs/mod_auth_shadow.so
+ 
+@@ -22,18 +23,16 @@
+ test: testvalidate
+ 
+ validate: validate.o
+-	$(CC) validate.o -lcrypt -o validate
+-	chown root:root validate
+-	chmod +s validate
++	$(CC) $(CFLAGS) validate.o -lcrypt -o validate
+ 
+ validate.o: validate.c validate.h
+-	$(CC) -c validate.c
++	$(CC) $(CFLAGS) -c validate.c
+ 
+ testvalidate.o: testvalidate.c
+-	$(CC) -c testvalidate.c
++	$(CC) $(CFLAGS) -c testvalidate.c
+ 
+ testvalidate: testvalidate.o
+-	$(CC) testvalidate.o -o testvalidate
++	$(CC) $(CFLAGS) testvalidate.o -o testvalidate
+ 
+ .libs/mod_auth_shadow.so: mod_auth_shadow.c validate.h
+ 	$(APXS) $(DEFINES) -c mod_auth_shadow.c
