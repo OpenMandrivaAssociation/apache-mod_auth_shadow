@@ -7,7 +7,7 @@
 Summary:	Shadow password authentication for the apache web server
 Name:		apache-%{mod_name}
 Version:	2.3
-Release:	8
+Release:	9
 Group:		System/Servers
 License:	GPL
 URL:		http://mod-auth-shadow.sourceforge.net/
