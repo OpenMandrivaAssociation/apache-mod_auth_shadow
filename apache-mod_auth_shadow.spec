@@ -10,7 +10,7 @@ Version:	2.3
 Release:	11
 Group:		System/Servers
 License:	GPL
-URL:		http://mod-auth-shadow.sourceforge.net/
+URL:		https://mod-auth-shadow.sourceforge.net/
 Source0:	http://prdownloads.sourceforge.net/mod-auth-shadow/%{mod_name}-%{version}.tar.gz
 Source1:	%{mod_conf}
 Patch0:		%{mod_name}-2.1-register.diff
