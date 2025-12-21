@@ -21,6 +21,7 @@ Requires(pre):  apache-conf >= %{apache_version}
 Requires(pre):  apache >= %{apache_version}
 Requires:	apache-conf >= %{apache_version}
 Requires:	apache >= %{apache_version}
+BuildRequires:	make
 BuildRequires:  apache-devel >= %{apache_version}
 Epoch:		1
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
